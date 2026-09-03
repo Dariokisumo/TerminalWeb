@@ -217,10 +217,14 @@ export default function PublishModal({ open, onClose }: { open: boolean; onClose
               <div className="flex gap-2">
                 <Num n="03" />
                 <div className="flex-1">
-                  <div className="text-[13px] font-semibold text-ink">Commit changes</div>
+                  <div className="text-[13px] font-semibold text-ink">Commit changes — and merge the PR</div>
                   <p className="mt-1 text-[12px] leading-5 text-dim">
-                    GitHub uploads straight to <span className="text-cy">main</span>. The file list now shows
-                    package.json, CHANGELOG.md, src/, docs/, public/ — the whole repo.
+                    If GitHub said <span className="text-ink/80">"create a new branch and start a pull request"</span>{" "}
+                    (it does when main is protected), the files are staged: open the{" "}
+                    <span className="acc">Pull requests</span> tab → review under{" "}
+                    <span className="text-ink/80">Files changed</span> →{" "}
+                    <span className="acc">Merge pull request</span> → Confirm merge. Now the repo file list
+                    shows package.json, CHANGELOG.md, src/, docs/, public/ — the whole repo.
                   </p>
                 </div>
               </div>
@@ -290,6 +294,11 @@ export default function PublishModal({ open, onClose }: { open: boolean; onClose
               </li>
               <li>
                 <span className="acc">▸</span> no git at all? → use the <span className="acc">BROWSER UPLOAD</span> tab — zero git required.
+              </li>
+              <li>
+                <span className="acc">▸</span> you DID upload? → open the <span className="acc">Pull requests</span> tab.
+                protected branches turn uploads into PRs — <span className="text-ink/80">view it → Merge pull request →
+                Confirm merge</span> and the files land.
               </li>
             </ul>
           </div>

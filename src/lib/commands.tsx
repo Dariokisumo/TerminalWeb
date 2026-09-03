@@ -494,7 +494,10 @@ export const COMMANDS: Command[] = [
               3. <span className="acc">Add file → Upload files</span> → drag the <span className="text-ink/80">contents</span>{" "}
               of the unzipped folder into the box
             </div>
-            <div>4. commit changes — the whole repo appears on main</div>
+            <div>
+              4. commit changes — if GitHub opens a PR instead (protected main), view it →{" "}
+              <span className="acc">Merge pull request</span> → Confirm. now it's on main.
+            </div>
             <div className="mt-1 text-dim">
               visual guide: the <span className="acc">PUBLISH</span> button in the header.
             </div>
@@ -540,8 +543,19 @@ export const COMMANDS: Command[] = [
             </div>
             <div className="mt-1 text-dim">
               those two files were seeded by GitHub when the repo was created. your push was
-              rejected (non-fast-forward) or never ran. from your unzipped repo folder:
+              rejected (non-fast-forward), never ran — or it's sitting in a pull request.
             </div>
+            <div className="mt-2 border-l-2 border-[color:var(--acc)] pl-3">
+              <div className="text-ink/90">CHECK #0 — the pull requests tab</div>
+              <div className="text-dim">
+                if your upload went to a new branch (GitHub does this when main is
+                protected), nothing lands until you merge: open the PR →{" "}
+                <span className="text-ink/80">Files changed</span> →{" "}
+                <span className="acc">Merge pull request</span> → Confirm merge. files appear
+                instantly, no git needed.
+              </div>
+            </div>
+            <div className="mt-2 text-dim">no PR there? then from your unzipped repo folder:</div>
             <div className="mt-1 space-y-[2px]">
               {[
                 "git pull origin main --allow-unrelated-histories",
