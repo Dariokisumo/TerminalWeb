@@ -1,12 +1,12 @@
 import { Fragment, type ReactNode } from "react";
 import {
   buildTree,
-  flatten,
   getNode,
   renderFile,
   resolvePath,
   toSegments,
 } from "../data/fs";
+import { downloadRepoZip } from "./repoZip";
 
 /* ------------------------------------------------------------------ */
 /*  types + themes                                                     */
@@ -458,92 +458,131 @@ export const COMMANDS: Command[] = [
     desc: "download this repository as terminalweb-repo.zip",
     run: (_a, ctx) => {
       sys(ctx, "packing inode table → terminalweb-repo.zip …");
-      void (async () => {
-        const { default: JSZip } = await import("jszip");
-        const zip = new JSZip();
-        const files = flatten();
-        files.forEach(([p, c]) => zip.file(p, c));
-        zip.file(
-          "PUSH_TO_GITHUB.md",
-          [
-            "# Push Terminalweb to GitHub",
-            "",
-            "1. Create an empty repo named `Terminalweb` on github.com",
-            "   (leave 'Add a README file' UNCHECKED — this zip ships its own).",
-            "2. From this folder, run:",
-            "",
-            "```",
-            ...GITHUB_STEPS.filter(([k]) => k === "$").map(([, t]) => t),
-            "```",
-            "",
-            "If GitHub already seeded a README/LICENSE (new-repo defaults), pull first:",
-            "  git pull origin main --allow-unrelated-histories",
-            "",
-            "Be kind to your phosphors. — twsh",
-          ].join("\n")
-        );
-        const blob = await zip.generateAsync({ type: "blob" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "terminalweb-repo.zip";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 5000);
+      void downloadRepoZip().then((n) => {
         ctx.print(
           <div>
             <div>
-              <span className="acc font-semibold">✔ packed {files.length + 1} files</span>{" "}
-              <span className="text-dim">({files.map(([p]) => p).join(", ")}, PUSH_TO_GITHUB.md)</span>
+              <span className="acc font-semibold">✔ packed {n} files</span>{" "}
+              <span className="text-dim">— check your downloads folder.</span>
             </div>
             <div className="mt-1 text-dim">
-              next: type <span className="acc">github</span> for the step-by-step push recipe.
+              next: <span className="acc">github web</span> (upload in the browser, no git) or{" "}
+              <span className="acc">github cli</span> — or hit the <span className="acc">PUBLISH</span> button up top.
             </div>
           </div>
         );
-      })();
+      });
     },
   },
   {
     name: "github",
-    desc: "how to push this repo to github.com",
-    run: (_a, ctx) => {
-      ctx.print(
-        <div className="leading-6">
-          <div className="mb-1 font-semibold tracking-wide text-mg">
-            PUBLISHING TERMINALWEB → GITHUB
+    desc: "publish to github.com — github web · cli · fix",
+    run: (args, ctx) => {
+      const sub = (args[0] ?? "").toLowerCase();
+      if (sub === "web" || sub === "upload") {
+        ctx.print(
+          <div className="leading-6">
+            <div className="font-semibold tracking-wide text-mg">BROWSER UPLOAD — ZERO GIT</div>
+            <div className="mt-1">
+              1. <span className="acc">repo</span> → unzip <span className="text-cy">terminalweb-repo.zip</span>
+            </div>
+            <div>
+              2. on your Terminalweb repo page: open <span className="text-ink/80">README.md</span> → trash →
+              commit. same for <span className="text-ink/80">LICENSE</span>. (repo is now empty)
+            </div>
+            <div>
+              3. <span className="acc">Add file → Upload files</span> → drag the <span className="text-ink/80">contents</span>{" "}
+              of the unzipped folder into the box
+            </div>
+            <div>4. commit changes — the whole repo appears on main</div>
+            <div className="mt-1 text-dim">
+              visual guide: the <span className="acc">PUBLISH</span> button in the header.
+            </div>
           </div>
-          <div className="text-dim">
-            this page is the published app — GitHub needs a copy of the source files.
-          </div>
-          <div className="mt-1">
-            1. run <span className="acc">repo</span> — downloads{" "}
-            <span className="text-cy">terminalweb-repo.zip</span> with every file in this
-            repository.
-          </div>
-          <div>2. unzip it, then from that folder:</div>
-          <div className="mt-2 space-y-[2px]">
-            {GITHUB_STEPS.map(([k, t], i) => (
-              <div key={i} className="whitespace-pre-wrap">
-                {k === "$" ? (
-                  <>
-                    <span className="acc mr-2">$</span>
-                    <span className="text-ink/90">{t}</span>
-                  </>
-                ) : (
-                  <span className="text-dim">{t}</span>
-                )}
+        );
+      } else if (sub === "cli" || sub === "git") {
+        ctx.print(
+          <div className="leading-6">
+            <div className="font-semibold tracking-wide text-mg">CLASSIC GIT PUSH</div>
+            <div className="text-dim">unzip the archive from `repo`, then from that folder:</div>
+            <div className="mt-1 space-y-[2px]">
+              {GITHUB_STEPS.map(([k, t], i) => (
+                <div key={i} className="whitespace-pre-wrap">
+                  {k === "$" ? (
+                    <>
+                      <span className="acc mr-2">$</span>
+                      <span className="text-ink/90">{t}</span>
+                    </>
+                  ) : (
+                    <span className="text-dim">{t}</span>
+                  )}
+                </div>
+              ))}
+              <div className="text-dim">if pull stops with CONFLICT (add/add):</div>
+              <div>
+                <span className="acc mr-2">$</span>
+                <span className="text-ink/90">
+                  git checkout --ours README.md LICENSE && git add . && git commit -m "merge"
+                </span>
               </div>
-            ))}
+              <div>
+                <span className="acc mr-2">$</span>
+                <span className="text-ink/90">git push -u origin main</span>
+              </div>
+            </div>
           </div>
-          <div className="mt-2 text-dim">
-            only see README/LICENSE up there? those are GitHub's new-repo defaults — pull
-            first with <span className="acc">git pull origin main --allow-unrelated-histories</span>,
-            then push.
+        );
+      } else if (sub === "fix" || sub === "stuck") {
+        ctx.print(
+          <div className="leading-6">
+            <div className="font-semibold tracking-wide text-err">
+              DIAGNOSIS: STILL ONLY README + LICENSE ON GITHUB
+            </div>
+            <div className="mt-1 text-dim">
+              those two files were seeded by GitHub when the repo was created. your push was
+              rejected (non-fast-forward) or never ran. from your unzipped repo folder:
+            </div>
+            <div className="mt-1 space-y-[2px]">
+              {[
+                "git pull origin main --allow-unrelated-histories",
+                'git checkout --ours README.md LICENSE && git add . && git commit -m "merge seed files"',
+                "git push -u origin main",
+              ].map((t) => (
+                <div key={t}>
+                  <span className="acc mr-2">$</span>
+                  <span className="text-ink/90">{t}</span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-1 text-dim">
+              no git installed? → <span className="acc">github web</span> does it all in the browser.
+            </div>
           </div>
-        </div>
-      );
+        );
+      } else {
+        ctx.print(
+          <div className="leading-6">
+            <div className="font-semibold tracking-wide text-mg">PUBLISH TERMINALWEB → GITHUB</div>
+            <div className="mt-1 text-dim">
+              easiest: hit the <span className="acc">⇪ PUBLISH</span> button in the header — guided steps
+              with copy buttons.
+            </div>
+            <div>or stay in the shell:</div>
+            <div>
+              <span className="acc">github web</span>
+              <span className="text-dim"> — upload via browser, no git needed</span>
+            </div>
+            <div>
+              <span className="acc">github cli</span>
+              <span className="text-dim"> — classic git push</span>
+            </div>
+            <div>
+              <span className="acc">github fix</span>
+              <span className="text-dim"> — push rejected? only README+LICENSE up there? start here</span>
+            </div>
+          </div>
+        );
+      }
     },
   },
 ];
