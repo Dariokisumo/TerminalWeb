@@ -40,7 +40,7 @@ type Props = {
   startTime: number;
 };
 
-const CHIPS = ["help", "neofetch", "tree", "git log", "cat README.md", "matrix"];
+const CHIPS = ["help", "tree", "github", "repo", "neofetch", "git log", "matrix"];
 
 const KIND_CLASS: Record<LineKind, string> = {
   out: "text-ink/90",

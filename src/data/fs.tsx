@@ -37,6 +37,11 @@ export const FS: FsNode = d({
       "- glyphcore — text rasterizer",
       "- netpulse — latency sidecar (see right panel)",
       "",
+      "## PUBLISH",
+      "",
+      "- run `repo` in the shell — downloads this repo as terminalweb-repo.zip",
+      "- run `github` — step-by-step push instructions",
+      "",
       "## LICENSE",
       "",
       "MIT — see LICENSE. be kind to your phosphors.",
@@ -167,6 +172,8 @@ export const FS: FsNode = d({
         "- echo · date · uptime · whoami · clear",
         "- sudo — (you are not in the sudoers file)",
         "- reboot — cold restart the frame",
+        "- repo — download this repository as a .zip",
+        "- github — step-by-step push recipe for github.com",
       ].join("\n"),
       "0.8K"
     ),
@@ -246,6 +253,16 @@ export function resolvePath(cwd: string, target: string): string | null {
   }
   if (!getNode(out)) return null;
   return toDisplay(out);
+}
+
+export function flatten(root: FsNode = FS, prefix = ""): Array<[string, string]> {
+  if (root.type === "file") return prefix ? [[prefix, root.content]] : [];
+  const out: Array<[string, string]> = [];
+  for (const [name, child] of Object.entries(root.children)) {
+    const p = prefix ? `${prefix}/${name}` : name;
+    out.push(...flatten(child, p));
+  }
+  return out;
 }
 
 export type TreeLine = { pre: string; name: string; isDir: boolean };

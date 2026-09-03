@@ -1,6 +1,7 @@
 import { Fragment, type ReactNode } from "react";
 import {
   buildTree,
+  flatten,
   getNode,
   renderFile,
   resolvePath,
@@ -49,6 +50,16 @@ export type Command = {
 export const BANNER = [
   "▀█▀ █▀▀ █▀█ █▀▄▀█ █ █▄░█ ▄▀█ █░░",
   "░█░ ██▄ █▀▄ █░▀░█ █ █░▀█ █▀█ █▄▄",
+];
+
+const GITHUB_STEPS: Array<[string, string]> = [
+  ["#", "create a repo named 'Terminalweb' on github.com"],
+  ["#", "leave 'Add a README file' UNCHECKED — the zip ships its own"],
+  ["$", "git init && git add ."],
+  ["$", 'git commit -m "Terminalweb: phosphor shell v2.4.1"'],
+  ["$", "git branch -M main"],
+  ["$", "git remote add origin https://github.com/<you>/Terminalweb.git"],
+  ["$", "git push -u origin main"],
 ];
 
 function uptimeStr(start: number) {
@@ -440,6 +451,99 @@ export const COMMANDS: Command[] = [
     run: (_a, ctx) => {
       sys(ctx, "syncing phosphor… unmounting /dev/web…");
       setTimeout(() => ctx.reboot(), 650);
+    },
+  },
+  {
+    name: "repo",
+    desc: "download this repository as terminalweb-repo.zip",
+    run: (_a, ctx) => {
+      sys(ctx, "packing inode table → terminalweb-repo.zip …");
+      void (async () => {
+        const { default: JSZip } = await import("jszip");
+        const zip = new JSZip();
+        const files = flatten();
+        files.forEach(([p, c]) => zip.file(p, c));
+        zip.file(
+          "PUSH_TO_GITHUB.md",
+          [
+            "# Push Terminalweb to GitHub",
+            "",
+            "1. Create an empty repo named `Terminalweb` on github.com",
+            "   (leave 'Add a README file' UNCHECKED — this zip ships its own).",
+            "2. From this folder, run:",
+            "",
+            "```",
+            ...GITHUB_STEPS.filter(([k]) => k === "$").map(([, t]) => t),
+            "```",
+            "",
+            "If GitHub already seeded a README/LICENSE (new-repo defaults), pull first:",
+            "  git pull origin main --allow-unrelated-histories",
+            "",
+            "Be kind to your phosphors. — twsh",
+          ].join("\n")
+        );
+        const blob = await zip.generateAsync({ type: "blob" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "terminalweb-repo.zip";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        ctx.print(
+          <div>
+            <div>
+              <span className="acc font-semibold">✔ packed {files.length + 1} files</span>{" "}
+              <span className="text-dim">({files.map(([p]) => p).join(", ")}, PUSH_TO_GITHUB.md)</span>
+            </div>
+            <div className="mt-1 text-dim">
+              next: type <span className="acc">github</span> for the step-by-step push recipe.
+            </div>
+          </div>
+        );
+      })();
+    },
+  },
+  {
+    name: "github",
+    desc: "how to push this repo to github.com",
+    run: (_a, ctx) => {
+      ctx.print(
+        <div className="leading-6">
+          <div className="mb-1 font-semibold tracking-wide text-mg">
+            PUBLISHING TERMINALWEB → GITHUB
+          </div>
+          <div className="text-dim">
+            this page is the published app — GitHub needs a copy of the source files.
+          </div>
+          <div className="mt-1">
+            1. run <span className="acc">repo</span> — downloads{" "}
+            <span className="text-cy">terminalweb-repo.zip</span> with every file in this
+            repository.
+          </div>
+          <div>2. unzip it, then from that folder:</div>
+          <div className="mt-2 space-y-[2px]">
+            {GITHUB_STEPS.map(([k, t], i) => (
+              <div key={i} className="whitespace-pre-wrap">
+                {k === "$" ? (
+                  <>
+                    <span className="acc mr-2">$</span>
+                    <span className="text-ink/90">{t}</span>
+                  </>
+                ) : (
+                  <span className="text-dim">{t}</span>
+                )}
+              </div>
+            ))}
+          </div>
+          <div className="mt-2 text-dim">
+            only see README/LICENSE up there? those are GitHub's new-repo defaults — pull
+            first with <span className="acc">git pull origin main --allow-unrelated-histories</span>,
+            then push.
+          </div>
+        </div>
+      );
     },
   },
 ];
