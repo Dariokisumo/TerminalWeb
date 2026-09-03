@@ -244,7 +244,7 @@ export default function PublishModal({ open, onClose }: { open: boolean; onClose
               <div>
                 <div className="text-[10px] tracking-widest text-faint">FROM THE UNZIPPED FOLDER, IN ORDER:</div>
                 <Cmd text="git init && git add ." />
-                <Cmd text='git commit -m "Terminalweb: phosphor shell v2.4.1"' />
+                <Cmd text='git commit -m "Terminalweb: phosphor shell v2.5.0"' />
                 <Cmd text="git branch -M main" />
                 <Cmd text={`git remote add origin ${remote}`} />
                 <Cmd text="git pull origin main --allow-unrelated-histories" />

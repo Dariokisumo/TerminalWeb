@@ -56,7 +56,7 @@ const GITHUB_STEPS: Array<[string, string]> = [
   ["#", "create a repo named 'Terminalweb' on github.com"],
   ["#", "leave 'Add a README file' UNCHECKED — the zip ships its own"],
   ["$", "git init && git add ."],
-  ["$", 'git commit -m "Terminalweb: phosphor shell v2.4.1"'],
+  ["$", 'git commit -m "Terminalweb: phosphor shell v2.5.0"'],
   ["$", "git branch -M main"],
   ["$", "git remote add origin https://github.com/<you>/Terminalweb.git"],
   ["$", "git push -u origin main"],
@@ -238,7 +238,7 @@ export const COMMANDS: Command[] = [
               {l}
             </div>
           ))}
-          <div className="mt-1 text-[11px] tracking-[0.4em] text-dim">PHOSPHOR SHELL · TWSH 2.4.1</div>
+          <div className="mt-1 text-[11px] tracking-[0.4em] text-dim">PHOSPHOR SHELL · TWSH 2.5.0</div>
         </div>
       ),
   },
@@ -255,9 +255,9 @@ export const COMMANDS: Command[] = [
         "└─────────────────┘",
       ];
       const info: [string, ReactNode][] = [
-        ["OS", "Terminalweb 2.4.1 (phosphor)"],
+        ["OS", "Terminalweb 2.5.0 (phosphor)"],
         ["Host", "Browser Tab · x86-web"],
-        ["Kernel", "twsh 2.4.1"],
+        ["Kernel", "twsh 2.5.0"],
         ["Shell", "twsh (tiny web shell)"],
         ["Resolution", `${window.innerWidth}×${window.innerHeight}`],
         ["Theme", THEMES[ctx.theme].label.toLowerCase()],

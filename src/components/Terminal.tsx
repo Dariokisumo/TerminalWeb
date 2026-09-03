@@ -101,7 +101,7 @@ const Terminal = forwardRef<TermHandle, Props>(function Terminal(
               {l}
             </div>
           ))}
-          <div className="mt-1 text-[11px] tracking-[0.4em] text-dim">PHOSPHOR SHELL · TWSH 2.4.1</div>
+          <div className="mt-1 text-[11px] tracking-[0.4em] text-dim">PHOSPHOR SHELL · TWSH 2.5.0</div>
         </div>
       ),
     });

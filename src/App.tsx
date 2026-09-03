@@ -60,7 +60,7 @@ export default function App() {
               <h1 className="t-glow acc font-disp text-[26px] leading-none tracking-[0.08em]">
                 TERMINALWEB
               </h1>
-              <span className="text-[10px] tracking-[0.22em] text-dim">v2.4.1 · twsh</span>
+              <span className="text-[10px] tracking-[0.22em] text-dim">v2.5.0 · twsh</span>
             </div>
             <div className="ml-auto flex shrink-0 items-center gap-2">
               <button

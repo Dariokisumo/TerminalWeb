@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 
 const BOOT_LINES = [
-  "TERMINALWEB BIOS v2.4.1 — (c) 2026 Terminalweb Foundry",
+  "TERMINALWEB BIOS v2.5.0 — (c) 2026 Terminalweb Foundry",
   "CPU0 : JavaScript V8 @ 60fps .................... OK",
   "MEM  : 512K conventional, ∞ virtual ............. OK",
   "GPU  : CSS compositing layer .................... OK",
   "NET  : uplink to /dev/web ....................... OK",
   "Mounting /home/guest/terminalweb ................ OK",
-  "Loading twsh 2.4.1 (shell kernel) ............... OK",
+  "Loading twsh 2.5.0 (shell kernel) ............... OK",
   "Compiling glyph atlas [██████████████] 100%",
   "Starting glyphcore daemon ....................... OK",
   "Starting netpulse monitor ....................... OK",
@@ -59,7 +59,7 @@ export default function BootScreen({ onDone }: { onDone: () => void }) {
       onClick={finish}
     >
       <div className="mx-auto w-full max-w-2xl">
-        <div className="mb-2 text-[11px] tracking-[0.3em] text-dim">FOUNDRY FIRMWARE · REV 2.4.1</div>
+        <div className="mb-2 text-[11px] tracking-[0.3em] text-dim">FOUNDRY FIRMWARE · REV 2.5.0</div>
         <h1 className="t-glow acc font-disp text-6xl leading-none tracking-wider md:text-8xl">
           TERMINALWEB
         </h1>

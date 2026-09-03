@@ -16,7 +16,7 @@ export const PUSH_MD = `# Push Terminalweb to GitHub
 
     cd <unzipped-folder>
     git init && git add .
-    git commit -m "Terminalweb: phosphor shell v2.4.1"
+    git commit -m "Terminalweb: phosphor shell v2.5.0"
     git branch -M main
     git remote add origin https://github.com/<you>/Terminalweb.git
     git pull origin main --allow-unrelated-histories
